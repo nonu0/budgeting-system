@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-$g*)h&85!(%q^+4#mnht&bfj!a&#ae43@jbpstk!)(6*9k(qof
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','Fflic-budgeting-system-production.up.railway.app']
-
+CSRF_TRUSTED_ORIGINS = ['Fflic-budgeting-system-production.up.railway.app']
 
 # Application definition
 
