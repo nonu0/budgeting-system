@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="home-container">
+    <div class="user-summary">
+        <div class="user-card">
+            <h1>Welcome Guest</h1>
+            <h1>What do you do?</h1>
+            <img src="{% static 'images/test.jpg' %}" class="user-img" alt="">
+            <h3>User status is False</h3>
+        </div>
+        <div class="expense-cards">
+            <a href="">
+                <div class="income-card">
+                    <h1>Monthly Income</h1>
+                    <h2>ksh.0</h2>
+                    <img src="" alt="">
+                    <p>User status is False!</p>
+            </a>
+        </div>
+        <a href="">
+            <div class="debt-card">
+                <h1>Monthly Debt</h1>
+                <h2>ksh.0</h2>
+                <img src="" alt="">
+                <p>User status is False!</p>
+        </a>
+    </div>
+    <a href="">
+        <div class="expense-card">
+            <h1>Monthly Expenses</h1>
+            <h2>ksh.0</h2>
+            <img src="" alt="">
+            <p>User status is False!</p>
+    </a></div>
+
+    </div>
+    </div>
+    <div class="summary-calendar">
+        <div class="summary-graph">
+            <img src="{% static 'images/test.jpg' %}" class="graph" alt="">
+        </div>
+        <div class="calendar-card">
+            <img src="{% static 'images/test.jpg' %}" class="calendar" alt="">
+        </div>
+    </div>
+</section>
+{% endblock %}
