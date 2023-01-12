@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-$g*)h&85!(%q^+4#mnht&bfj!a&#ae43@jbpstk!)(6*9k(qof
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1','fflic-budgeting-system-production.up.railway.app']
 
 
 # Application definition
