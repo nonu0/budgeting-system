@@ -1,5 +1,7 @@
 from django.urls import path
-from .views import HomeView,LoginView,RegisterView, LogoutView,HomeGuest,DebtView,AllForms,AllTables,WidgetView
+from .views import HomeView,LoginView,RegisterView, LogoutView,HomeGuest,DebtView,AllForms,AllTables,UserProfile
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'budget'
 
@@ -12,6 +14,5 @@ urlpatterns = [
     path('register',RegisterView.as_view(),name='register'),
     path('logout',LogoutView.as_view(),name='logout'),
     path('tables',AllTables.as_view(),name='tables'),
-    path('widgets',WidgetView.as_view(),name='widgets'),
-
-]
+    path('user-profile',UserProfile.as_view(),name='user-profile'),
+]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

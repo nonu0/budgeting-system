@@ -7,7 +7,7 @@
         <div class="user-card">
             <h1>Welcome Guest</h1>
             <h1>What do you do?</h1>
-            <img src="{% static 'images/test.jpg' %}" class="user-img" alt="">
+            <img src="{{owner.userprofile.image.url}}" class="user-img" alt="">
             <h3>User status is False</h3>
         </div>
         <div class="expense-cards">

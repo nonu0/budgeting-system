@@ -14,11 +14,16 @@ class Owner(models.Model):
     username = models.CharField(max_length=10)
     email = models.EmailField()
     gender = models.IntegerField(choices=GENDER)
+    phone_no = models.IntegerField()
+    code = models.IntegerField()
+    address = models.IntegerField()
+    county = models.CharField(max_length=20)
+    town = models.CharField(max_length=20)
 
     def __str__(self) -> str:
         return str(self.first_name)
 
-    
+       
 class Income(models.Model):
     owner = models.ForeignKey(Owner,on_delete=models.CASCADE,blank=True,null=True)
     date = models.DateTimeField(auto_now_add=True)
@@ -59,3 +64,10 @@ class Expenses(models.Model):
 
     def __str__(self):
         return self.get_category_display()
+
+class UserProfile(models.Model):
+    owner = models.OneToOneField(Owner,on_delete=models.CASCADE,blank=True,null=True)
+    image = models.ImageField(upload_to='media',default='default.png',blank=True,null=True)
+
+    def __str__(self) -> str:
+        return self.owner.username + ' profile pic'

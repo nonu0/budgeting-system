@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.views.generic import TemplateView,FormView,View,CreateView
-from .forms import IncomeForm,RegisterForm,MyLoginForm,ExpenseForm,DebtForm
+from .forms import IncomeForm,RegisterForm,MyLoginForm,ExpenseForm,DebtForm,UserImageForm
 from django.core.exceptions import ValidationError
+from django.db.models.functions import Extract
 from django.contrib.auth import logout,login,authenticate
 from django.contrib.auth.models import User
 from .models import Income,Expenses,Debt
@@ -21,7 +22,9 @@ class HomeView(TemplateView):
         debt = Debt.objects.filter(owner=owner)
         expense = Expenses.objects.filter(owner=owner)
         expense_total = [expense_total.actual_amount for expense_total in expense]
+        expense_months = list(Expenses.objects.annotate(month_stamp=Extract('date_added','day')).values_list('month_stamp',flat=True))
         gross_expense = sum(expense_total)
+        print(type(expense_months))
         debt_total = [debt_total.actual_amount for debt_total in debt]
         gross_debt = sum(debt_total)
         actual_income = [actual_income.actual_amount for actual_income in income]
@@ -34,7 +37,32 @@ class HomeView(TemplateView):
         context['gross_debt'] = gross_debt
         context['net_income'] = net_income
         context['gross_expense'] = gross_expense
+        context['expense_months'] = expense_months
+        context['owner'] = owner
         return context
+
+
+class UserProfile(LoginRequiredMixin,CreateView):
+    template_name = 'user-profile.html'
+    login_url = 'budget:login'
+    redirect_field_name = 'budget:login'
+    form_class = UserImageForm
+
+    # def form_valid(self,form):
+    #     image = form.cleaned_data(self.request.FILES)
+    #     pro_pic = UserProfile.objects.create(
+    #         image=image
+    #     )
+    #     form.instance.user = self.request.user.owner
+    #     form.instance.save()
+    #     return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        owner = self.request.user.owner
+        context['owner'] = owner
+        return context
+
 
 
 class RegisterView(RegisterLoginPagesMixin,CreateView):
@@ -59,12 +87,6 @@ class RegisterView(RegisterLoginPagesMixin,CreateView):
         login(self.request,user,backend='django.contrib.auth.backends.ModelBackend')
         return super().form_valid(form)
 
-    def get_next_url(self):
-        if 'next' in self.request.GET:
-            next_url = self.request.GET.get('next')
-            return next_url
-        else:
-            return self.success_url
 
 class AllForms(LoginRequiredMixin,MultiFormsView):
     template_name = 'forms.html'
@@ -81,6 +103,12 @@ class AllForms(LoginRequiredMixin,MultiFormsView):
         'expense': reverse_lazy('budget:forms'),
         'debt': reverse_lazy('budget:forms'),
     }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        owner = self.request.user.owner
+        context['owner'] = owner
+        return context
 
     def income_form_valid(self, form):
         source = form.cleaned_data.get('source')
@@ -126,12 +154,6 @@ class LoginView(RegisterLoginPagesMixin,FormView):
             return render(self.request,self.template_name,{'form':self.form_class,'error':'invalid credentials'})
         return super().form_valid(form)
 
-    def get_next_url(self):
-        if 'next' in self.request.GET:
-            next_url = self.request.GET.get('next')
-            return next_url
-        else:
-            return self.success_url
 
 
 
@@ -169,7 +191,5 @@ class AllTables(FetchData,TemplateView):
         context['subscriptions_cat'] = subscriptions_cat
         context['savings_cat'] = savings_cat
         context['medical_cat'] = medical_cat
+        context['owner'] = owner
         return context
-
-class WidgetView(TemplateView):
-    template_name = 'widgets.html'
