@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-from .models import Owner,UserProfile
+from .models import Owner,UserProfile,EmailConfirmation
 
 @receiver(post_save,sender=Owner)
 def create_profile(sender,instance,created,**kwargs):
@@ -12,3 +12,12 @@ def create_profile(sender,instance,created,**kwargs):
 @receiver(post_save,sender=Owner)
 def save_profile(sender,instance,**kwargs):
    instance.userprofile.save()
+
+@receiver(post_save,sender=Owner)
+def create_profile_confirmation(sender,instance,created,**kwargs):
+    if created:
+        EmailConfirmation.objects.create(owner=instance)
+
+@receiver(post_save,sender=Owner)
+def save_profile_confirmation(sender,instance,**kwargs):
+    instance.emailconfirmation.save()

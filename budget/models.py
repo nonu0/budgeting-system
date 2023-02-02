@@ -71,3 +71,10 @@ class UserProfile(models.Model):
 
     def __str__(self) -> str:
         return self.owner.username + ' profile pic'
+
+class EmailConfirmation(models.Model):
+    owner = models.OneToOneField(Owner,on_delete=models.CASCADE,blank=True,null=True)
+    email_confirmed = models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return self.owner.username + str(self.email_confirmed)

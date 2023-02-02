@@ -6,10 +6,11 @@ from django.db.models.functions import Extract
 from django.contrib.auth import logout,login,authenticate
 from django.contrib.auth.models import User
 from .models import Income,Expenses,Debt
+from django.contrib import messages
 from .multiforms import MultiFormsView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
-from .utils import GetObjectMixin,RegisterLoginPagesMixin,FetchData
+from .utils import RegisterLoginPagesMixin,FetchData,SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 
@@ -65,10 +66,11 @@ class UserProfile(LoginRequiredMixin,CreateView):
 
 
 
-class RegisterView(RegisterLoginPagesMixin,CreateView):
+class RegisterView(RegisterLoginPagesMixin,SuccessMessageMixin,CreateView):
     template_name = 'authentication/register.html'
     form_class = RegisterForm
     success_url = reverse_lazy('budget:home-user')
+    success_message = 'user created successfully'
 
     def form_valid(self, form):
         uname = form.cleaned_data.get('username')
@@ -169,12 +171,13 @@ class DebtView(LoginRequiredMixin,TemplateView):
     template_name = 'budget:widgets.html'
 
 
-class AllTables(FetchData,TemplateView):
+class AllTables(LoginRequiredMixin,TemplateView):
     template_name = 'tables.html'
-    model = Income
-
+    login_url = 'budget:login'
+    redirect_field_name = 'budget:login'
     
     def get_context_data(self, **kwargs):
+
         context = super().get_context_data(**kwargs)
         owner = self.request.user.owner
         household_cat = Expenses.objects.filter(category=1).filter(owner=owner)
